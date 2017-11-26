@@ -8,84 +8,41 @@ import java.io.*;
 import java.util.*;
 import java.nio.charset.*;
 public class HttpInterface {
-  public static String executeGet(String targetURL, Map<String, String> parameters)
-    {
-      URL url;
-      HttpURLConnection connection = null;
-      try {
-        //Create connection
-        url = new URL(targetURL);
-        connection = (HttpURLConnection)url.openConnection();
-        //System.out.println("code:" + connection.getResponseCode());
+  public static String executeGet(String targetURL, Map<String, String> parameters) {
+    HttpURLConnection connection = null;
 
-        connection.setRequestMethod("GET");
-        connection.setDoOutput(true);//allows us to add parameters
-
-        connection.setConnectTimeout(5000);
-        connection.setReadTimeout(5000);
-
-        DataOutputStream out = new DataOutputStream(connection.getOutputStream());
-        out.writeBytes(getParamsString(parameters));
-        out.flush();
-        out.close();
-
-        int status = connection.getResponseCode();
-        BufferedReader in = new BufferedReader(
-          new InputStreamReader(connection.getInputStream()));
-        String inputLine;
-        StringBuffer content = new StringBuffer();
-        while ((inputLine = in.readLine()) != null) {
-          content.append(inputLine);
-        }
-        in.close();
-        return content.toString();
-
-      } catch (Exception e) {
-        e.printStackTrace();
-        return null;
-      } finally {
-        if(connection != null) {
-          connection.disconnect();
-        }
-      }
-    }
-
-  public static String executeGet2(String targetURL, Map<String, String> parameters) {
     try {
+      // Open a connection to the URL.
       URL url = new URL(targetURL);
+      connection = (HttpURLConnection)url.openConnection();
 
-      //URLConnection con = url.openConnection();
-      HttpURLConnection http = (HttpURLConnection)url.openConnection();
-      //System.out.println("code:"+http.getResponseCode());
-      http.setRequestMethod("GET");
-      http.setDoOutput(true);
+      // Set timeout to 5 seconds
+      connection.setConnectTimeout(5000);
+      connection.setReadTimeout(5000);
+      connection.setRequestMethod("GET");
+      // connection.setDoOutput(true); // Not sure if this needs to be true.
 
-      http.setConnectTimeout(5000);
-      http.setReadTimeout(5000);
-
-    //  HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-/*
-      DataOutputStream out = new DataOutputStream(http.getOutputStream());
-      out.writeBytes(getParamsString(parameters));
-      out.flush();
-      out.close();
-*/
-
-      int status = http.getResponseCode();
-      BufferedReader in = new BufferedReader(
-        new InputStreamReader(http.getInputStream()));
+      // Get the input from the connection's input stream.
+      BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
       String inputLine;
       StringBuffer content = new StringBuffer();
+
       while ((inputLine = in.readLine()) != null) {
         content.append(inputLine);
       }
+
       in.close();
+
       return content.toString();
     }
     catch(Exception e) {
       e.printStackTrace();
       return null;
+    }
+    finally {
+      if(connection != null) {
+        connection.disconnect();
+      }
     }
   }
 
@@ -171,6 +128,6 @@ public class HttpInterface {
     String targetURL = makeFullURL(baseURL, params);
     System.out.println("URL: " + targetURL);
 
-    System.out.println(executeGet2(targetURL, params));
+    System.out.println(executeGet(targetURL, params));
   }
 }
