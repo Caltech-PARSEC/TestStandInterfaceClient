@@ -1,5 +1,9 @@
 package edu.caltech.parsec.teststand;
 
+import com.sun.org.apache.xerces.internal.util.HTTPInputSource;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -17,6 +21,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+
+import java.util.Map;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 public class ClientApp extends Application {
 
@@ -117,11 +126,32 @@ public class ClientApp extends Application {
         grid.add(start_btn, 5, 10, 1, 1);
         grid.add(stop_btn, 6, 10, 1, 1);
 
+        AnimatedLineChart animatedLineChart = new AnimatedLineChart(10, 1, 100, 100, "T1", "X1", "Y1");
+        AnimatedLineChart animatedLineChart2 = new AnimatedLineChart(10, 1, 10, 1000, "T2", "X2", "Y2");
+
+        grid.add(animatedLineChart.createContent(), 0, 4, 4, 4);
+//        grid.add(animatedLineChart2.createContent(), 4, 4, 4, 4);
 
         Scene scene = new Scene(grid, 1024, 1024);
 
+        Sensors sensors = new Sensors();
+        addAnimatedLineChart(grid, animatedLineChart2, sensors::getEngineTempC, 4, 4, 4, 4);
+
         primaryStage.setScene(scene);
         primaryStage.show();
+        animatedLineChart.play();
+        animatedLineChart2.play();
+    }
+
+    private static void addAnimatedLineChart(GridPane grid, AnimatedLineChart chart, DoubleSupplier func,
+                                             int col_index, int row_index, int col_span, int row_span) {
+        Sensors sensors = new Sensors();
+        chart.animation.getKeyFrames().remove(0);
+        chart.animation.getKeyFrames()
+                .add(new KeyFrame(Duration.millis(chart.getRefreshRate()),
+                (ActionEvent actionEvent) -> chart.plotTime(func)));
+        System.out.println(chart.animation.getKeyFrames());
+        grid.add(chart.createContent(), col_index, row_index, col_span, row_span);
     }
 
     private static void setGridpaneColsRowsSameSize(GridPane grid, int rows, int cols) {
