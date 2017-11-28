@@ -7,7 +7,9 @@ import java.net.URLEncoder;
 import java.io.*;
 import java.util.*;
 import java.nio.charset.*;
+
 public class HttpInterface {
+
   public static String executeGet(String targetURL, Map<String, String> parameters) {
     HttpURLConnection connection = null;
 
@@ -16,11 +18,10 @@ public class HttpInterface {
       URL url = new URL(targetURL);
       connection = (HttpURLConnection)url.openConnection();
 
-      // Set timeout to 5 seconds
+      // Set timeout to 5 seconds.
       connection.setConnectTimeout(5000);
       connection.setReadTimeout(5000);
       connection.setRequestMethod("GET");
-      // connection.setDoOutput(true); // Not sure if this needs to be true.
 
       // Get the input from the connection's input stream.
       BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -49,11 +50,17 @@ public class HttpInterface {
   public static void executePost(String targetURL, Map<String, String> parameters) {
     URL url;
     HttpURLConnection connection = null;
+
     try {
+      // Convert the parameters map to a byte array.
       String urlParameters  = getParamsString(parameters);
       byte[] postData       = urlParameters.getBytes( StandardCharsets.UTF_8 );
+
+      // Open the connection.
       url = new URL(targetURL);
-      connection= (HttpURLConnection) url.openConnection();
+      connection = (HttpURLConnection) url.openConnection();
+
+      // Get the connection ready for writing.
       connection.setDoOutput( true );
       connection.setInstanceFollowRedirects( false );
       connection.setRequestMethod( "POST" );
@@ -61,6 +68,8 @@ public class HttpInterface {
       connection.setRequestProperty( "charset", "utf-8");
       connection.setRequestProperty( "Content-Length", Integer.toString(postData.length));
       connection.setUseCaches( false );
+
+      // Write the byte array created from the parameters map.
       try( DataOutputStream out = new DataOutputStream( connection.getOutputStream())) {
        out.write( postData );
       }
@@ -73,9 +82,10 @@ public class HttpInterface {
       }
     }
   }
+
   private static String getParamsString(Map<String, String> params)
     throws UnsupportedEncodingException {
-        StringBuilder result = new StringBuilder(); //
+        StringBuilder result = new StringBuilder();
 
         for (Map.Entry<String, String> entry : params.entrySet()) {
           result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
@@ -104,7 +114,7 @@ public class HttpInterface {
     }
 
     if (paramStr.length() == 0) {
-      // The baseURL should not have a '?' at the end
+      // The baseURL should not have a '?' at the end.
       if (baseURL.charAt(baseURL.length() -1) == '?') {
         return baseURL.substring(0, baseURL.length() -1);
       }
@@ -112,7 +122,7 @@ public class HttpInterface {
       return baseURL;
     }
 
-    // Make sure there is exactly one '?' between the base url and paramaters
+    // Make sure there is exactly one '?' between the base url and paramaters.
     if (baseURL.charAt(baseURL.length() -1) != '?') {
       baseURL += "?";
     }
