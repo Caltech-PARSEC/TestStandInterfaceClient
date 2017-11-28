@@ -1,15 +1,10 @@
 package edu.caltech.parsec.teststand;
 
-import com.sun.org.apache.xerces.internal.util.HTTPInputSource;
-import javafx.animation.Animation;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
@@ -19,15 +14,15 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.util.Map;
+import java.util.HashMap;
 import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 
 public class ClientApp extends Application {
+
+    private final String GET_ALL_SENSORS_URL = "https://private-143c20-simulatorcontrol.apiary-mock.com/getSensors";
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -134,7 +129,10 @@ public class ClientApp extends Application {
 
         Scene scene = new Scene(grid, 1024, 1024);
 
-        Sensors sensors = new Sensors();
+        ObjectMapper mapper = new ObjectMapper();
+        Sensors sensors = mapper.readValue(
+                HttpInterface.executeGet(GET_ALL_SENSORS_URL, new HashMap<>()), Sensors.class);
+        System.out.println(sensors);
         addAnimatedLineChart(grid, animatedLineChart2, sensors::getEngineTempC, 4, 4, 4, 4);
 
         primaryStage.setScene(scene);

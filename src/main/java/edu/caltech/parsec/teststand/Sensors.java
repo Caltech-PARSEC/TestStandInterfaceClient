@@ -16,7 +16,7 @@ public class Sensors {
     }
 
     public double getEngineTempC() {
-        return 10;
+        return engineTempC;
     }
 
     public void setEngineTempC(double engineTempC) {
@@ -38,4 +38,15 @@ public class Sensors {
     public void setOxidizerFlowRateLitersPerSec(double oxidizerFlowRateLitersPerSec) {
         this.oxidizerFlowRateLitersPerSec = oxidizerFlowRateLitersPerSec;
     }
+
+    @Override
+    public String toString() {
+        return "Sensors{" +
+                "thrustLbs=" + thrustLbs +
+                ", engineTempC=" + engineTempC +
+                ", fuelFlowRateLitersPerSec=" + fuelFlowRateLitersPerSec +
+                ", oxidizerFlowRateLitersPerSec=" + oxidizerFlowRateLitersPerSec +
+                '}';
+    }
+
 }
