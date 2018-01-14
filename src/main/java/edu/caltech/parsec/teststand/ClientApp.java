@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.animation.KeyFrame;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.chart.CategoryAxis;
@@ -11,12 +12,15 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 import java.util.HashMap;
 import java.util.function.DoubleSupplier;
 
@@ -33,7 +37,7 @@ public class ClientApp extends Application {
         grid.setHgap(25);
         grid.setVgap(25);
         grid.setPadding(new Insets(25, 25, 25, 25));
-
+/*
         // ======== CHARTS =================================
 
         final CategoryAxis xAxis1 = new CategoryAxis();
@@ -101,55 +105,59 @@ public class ClientApp extends Application {
         series3.getData().add(new XYChart.Data("Sep", 43));
         series3.getData().add(new XYChart.Data("Oct", 44));
         series3.getData().add(new XYChart.Data("Nov", 45));
-        series3.getData().add(new XYChart.Data("Dec", 44));
+        series3.getData().add(new XYChart.Data("Dec", 44));*/
 
-        lineChart1.getData().addAll(series1);
-        lineChart2.getData().addAll(series2);
-        lineChart3.getData().addAll(series3);
+//        lineChart1.getData().addAll(series1);
+//        lineChart2.getData().addAll(series2);
+//        lineChart3.getData().addAll(series3);
+
+        AnimatedLineChart animatedLineChart = new AnimatedLineChart(10, 1, 100, 1000000, "Temperature of Engine", "Time (s)", "Temperature (Deg C)");
+
+        // ================= TextArea STUFF ======================
+
+        TextArea javascriptTextBox = new TextArea();
+        javascriptTextBox.setWrapText(true);
 
         // =================== BUTTONS ========================
 
-        Button start_btn = new Button("Begin Test");
-        Button stop_btn = new Button("Stop Test");
+        ScriptEngineManager manager = new ScriptEngineManager();
+        ScriptEngine engine = manager.getEngineByName("js");
 
+        Button start_btn = new Button("Begin Test");
+        start_btn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                try {
+                    System.out.println(engine.eval(javascriptTextBox.getText()));
+                }
+                catch (Exception e) {
+                    System.out.println(e);
+                }
+            }
+        });
+        Button stop_btn = new Button("Stop Test");
 
         // ================= GRID STUFF ======================
 
-        grid.add(lineChart1, 0, 0, 4, 4); // Col index, row index, colspan, rowspan
-        grid.add(lineChart2, 4, 0, 4, 4);
-        grid.add(lineChart3, 8, 0, 4, 4);
+//        grid.add(lineChart1, 0, 0, 4, 4); // Col index, row index, colspan, rowspan
+//        grid.add(lineChart2, 4, 0, 4, 4);
+//        grid.add(lineChart3, 8, 0, 4, 4);
+        grid.add(javascriptTextBox, 0,0, 3, 4);
         grid.add(start_btn, 5, 10, 1, 1);
         grid.add(stop_btn, 6, 10, 1, 1);
-
-        AnimatedLineChart animatedLineChart = new AnimatedLineChart(10, 1, 100, 100, "T1", "X1", "Y1");
-        AnimatedLineChart animatedLineChart2 = new AnimatedLineChart(10, 1, 10, 1000, "T2", "X2", "Y2");
-
         grid.add(animatedLineChart.createContent(), 0, 4, 4, 4);
-//        grid.add(animatedLineChart2.createContent(), 4, 4, 4, 4);
 
-        Scene scene = new Scene(grid, 1024, 1024);
+        Scene scene = new Scene(grid, 1024, 800);
 
         ObjectMapper mapper = new ObjectMapper();
         Sensors sensors = mapper.readValue(
                 HttpInterface.executeGet(GET_ALL_SENSORS_URL, new HashMap<>()), Sensors.class);
         System.out.println(sensors);
-        addAnimatedLineChart(grid, animatedLineChart2, sensors::getEngineTempC, 4, 4, 4, 4);
 
         primaryStage.setScene(scene);
         primaryStage.show();
-        animatedLineChart.play();
-        animatedLineChart2.play();
-    }
-
-    private static void addAnimatedLineChart(GridPane grid, AnimatedLineChart chart, DoubleSupplier func,
-                                             int col_index, int row_index, int col_span, int row_span) {
-        Sensors sensors = new Sensors();
-        chart.animation.getKeyFrames().remove(0);
-        chart.animation.getKeyFrames()
-                .add(new KeyFrame(Duration.millis(chart.getRefreshRate()),
-                (ActionEvent actionEvent) -> chart.plotTime(func)));
-        System.out.println(chart.animation.getKeyFrames());
-        grid.add(chart.createContent(), col_index, row_index, col_span, row_span);
+        Object result = engine.eval("4*5");
+        System.out.println(result);
     }
 
     private static void setGridpaneColsRowsSameSize(GridPane grid, int rows, int cols) {

@@ -5,7 +5,6 @@ buildscript {
     repositories {
         mavenLocal()
         mavenCentral()
-
     }
 }
 
@@ -30,7 +29,6 @@ dependencies {
 }
 
 apply plugin: 'javafx-gradle-plugin'
-
 
 jfx {
     // Some config for the jfx plugin.

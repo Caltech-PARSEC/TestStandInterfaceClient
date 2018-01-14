@@ -10,9 +10,6 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.util.Duration;
 
-import java.util.Random;
-import java.util.function.DoubleSupplier;
-
 public class AnimatedLineChart {
 
     private LineChart<Number, Number> chart;
@@ -21,9 +18,7 @@ public class AnimatedLineChart {
 
     private NumberAxis xAxis;
 
-    public Timeline animation;
-
-    private double sequence = 0;
+    private double num_points = 0;
 
     private double y = 5;
 
@@ -45,13 +40,6 @@ public class AnimatedLineChart {
         TITLE = title;
         X_AXIS_LABEL = x_axis;
         Y_AXIS_LABEL = y_axis;
-
-        // create timeline to add new data every 100ms
-        animation = new Timeline();
-        animation.getKeyFrames()
-                .add(new KeyFrame(Duration.millis(ms_refresh_rate),
-                        (ActionEvent actionEvent) -> plotTime()));
-        animation.setCycleCount(Animation.INDEFINITE);
     }
 
     public Parent createContent() {
@@ -76,55 +64,31 @@ public class AnimatedLineChart {
 
         // create some starting data
         dataSeries.getData()
-                .add(new XYChart.Data<Number, Number>(++sequence, y));
+                .add(new XYChart.Data<Number, Number>(++num_points, y));
 
         chart.getData().add(dataSeries);
 
         return chart;
     }
 
-    public void plotTime(DoubleSupplier supplier) {
-        dataSeries.getData().add(new XYChart.Data<Number, Number>(++sequence, supplier.getAsDouble()));
+    public void addValue(double val) {
+        addValue(num_points + 1, val);
+    }
+
+    public void addValue(double time, double val) {
+        num_points++;
+        dataSeries.getData().add(new XYChart.Data<>(time, val));
 
         // delete old data
-        if (sequence > max_num_data_points) {
+        if (num_points > max_num_data_points) {
             dataSeries.getData().remove(0);
         }
 
-        // every hour after 24 move range 1 hour
-        if (sequence > max_num_data_points - 1 && sequence % step == 0) {
+        // every $step$ number of points, move the x-axis
+        if (num_points > max_num_data_points - 1 && num_points % step == 0) {
             xAxis.setLowerBound(xAxis.getLowerBound() + step);
             xAxis.setUpperBound(xAxis.getUpperBound() + step);
         }
-    }
-
-    public void plotTime() {
-        dataSeries.getData().add(new XYChart.Data<Number, Number>(++sequence, getNextValue()));
-
-        // delete old data
-        if (sequence > max_num_data_points) {
-            dataSeries.getData().remove(0);
-        }
-
-        // every hour after 24 move range 1 hour
-        if (sequence > max_num_data_points - 1 && sequence % step == 0) {
-            xAxis.setLowerBound(xAxis.getLowerBound() + step);
-            xAxis.setUpperBound(xAxis.getUpperBound() + step);
-        }
-    }
-
-    private double getNextValue() {
-        Random rand = new Random();
-        return rand.nextInt((MAX_Y - MIN_Y) - 1) + MIN_Y + 1;
-    }
-
-    public void play() {
-        animation.play();
-    }
-
-    //    @Override
-    public void stop() {
-        animation.pause();
     }
 
     public void setStepX(int step_x) {
