@@ -1,8 +1,10 @@
 import javafx.application.Application;
+import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
@@ -33,7 +35,7 @@ public class ValveSliders extends Application {
     public void start(Stage stage) {
         /* Setup the group and the scene. */
         Group root = new Group();
-        Scene scene = new Scene(root, 300, 600);
+        Scene scene = new Scene(root, 400, 600);
 
         /* Put the scene on the stage. */
         stage.setScene(scene);
@@ -45,16 +47,14 @@ public class ValveSliders extends Application {
         grid.setVgap(20);
         grid.setHgap(20);
 
-        /* Put sliders on the grid. */
-        System.out.println("valves: " + numValves);
+        /* Get the number of valves from the user. */
         System.out.print("Enter the number of valves: ");
         numValves = in.nextInt();
         in.nextLine(); // Read the rest of the line to get the '\n'.
         System.out.println("valves: " + numValves);
 
+        /* Put sliders on the grid. */
         for (int i = 0; i < numValves; i++) {
-            System.out.println("i: " + i);
-
             /* Setup a new slider. */
             Slider slide = new Slider();
             slide.setMin(0);
@@ -64,16 +64,23 @@ public class ValveSliders extends Application {
             slide.setShowTickMarks(true);
             slide.setBlockIncrement(1);
 
-            /* Setup the corresponding label. */
-            //Label label = new Label(Double.toString(slide.getValue()));
+            /* Setup the corresponding labels. */
+            Label nameLabel = new Label("Valve " + i);
+            Label valLabel  = new Label();
+            //Label valLabel = new Label(Double.toString(slide.getValue()));
+            valLabel.textProperty().bind(
+                Bindings.format("%.1f", slide.valueProperty())
+            );
 
-            grid.add(slide, 0, i);
-            //grid.add(label, 1, i);
+            /* Put the slider and label next to each other on the grid. */
+            grid.add(nameLabel, 0, i);
+            grid.add(slide, 1, i);
+            grid.add(valLabel, 2, i);
         }
 
-        System.out.println("Done adding sliders.");
-
-        scene.setRoot(grid);
+        ScrollPane scroll = new ScrollPane();
+        scroll.setContent(grid);
+        scene.setRoot(scroll);
 
         /* Display the stage. */
         stage.show();
