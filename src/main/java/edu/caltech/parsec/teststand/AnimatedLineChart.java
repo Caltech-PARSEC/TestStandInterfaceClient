@@ -1,93 +1,89 @@
 package edu.caltech.parsec.teststand;
 
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.event.ActionEvent;
+import javafx.beans.NamedArg;
 import javafx.scene.Parent;
+import javafx.scene.chart.Axis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import javafx.util.Duration;
+import javafx.scene.layout.Region;
 
-public class AnimatedLineChart {
+import java.util.ArrayList;
+import java.util.HashMap;
 
-    private LineChart<Number, Number> chart;
+public class AnimatedLineChart extends LineChart {
+    private HashMap<String, XYChart.Series<Number, Number>> data_series;
+    private HashMap<String, Integer> series_num_points;
 
-    private XYChart.Series<Number, Number> dataSeries;
+    // max_allowed_num_data_points is the number of data points to show.
+    private int max_allowed_num_data_points, step;
 
-    private NumberAxis xAxis;
-
-    private double num_points = 0;
-
-    private double y = 5;
-
-    // max_num_data_points is the number of data points to show.
-    private int max_num_data_points, step;
-    private long ms_refresh_rate;
-    private final int MAX_Y, MIN_Y;
-
-    private final String TITLE, X_AXIS_LABEL, Y_AXIS_LABEL;
-
-    public AnimatedLineChart(int max_y, int min_y, int max_num_data_points, long ms_refresh_rate, String title, String x_axis, String y_axis) {
-
-        MAX_Y = max_y;
-        MIN_Y = min_y;
-        this.max_num_data_points = max_num_data_points;
-        step = max_num_data_points / 10;
-        this.ms_refresh_rate = ms_refresh_rate;
-
-        TITLE = title;
-        X_AXIS_LABEL = x_axis;
-        Y_AXIS_LABEL = y_axis;
+    public AnimatedLineChart(@NamedArg("xAxis") Axis xAxis, @NamedArg("yAxis") Axis yAxis) {
+        super(xAxis, yAxis);
     }
 
-    public Parent createContent() {
-
-        xAxis = new NumberAxis(0, max_num_data_points, step);
-        final NumberAxis yAxis = new NumberAxis(MIN_Y, MAX_Y, 1);
-        chart = new LineChart<>(xAxis, yAxis);
-
+    public AnimatedLineChart(NumberAxis xAxis, NumberAxis yAxis, String title, String[] series_names) {
+        super(xAxis, yAxis);
         // setup chart
-        chart.setAnimated(false);
-        chart.setLegendVisible(false);
-        chart.setTitle(TITLE);
-        xAxis.setLabel(X_AXIS_LABEL);
-        xAxis.setForceZeroInRange(false);
-
-        yAxis.setLabel(Y_AXIS_LABEL);
-//        yAxis.setTickLabelFormatter(new NumberAxis.DefaultFormatter(yAxis, "$", null));
-
-        // add starting data
-        dataSeries = new XYChart.Series<>();
-        dataSeries.setName("Data");
-
-        // create some starting data
-        dataSeries.getData()
-                .add(new XYChart.Data<Number, Number>(++num_points, y));
-
-        chart.getData().add(dataSeries);
-
-        return chart;
+        super.setAnimated(false);
+        super.setTitle(title);
+//        chart.setLegendVisible(false);
+        data_series = new HashMap<>();
+        series_num_points = new HashMap<>();
+        for (String name : series_names) {
+            XYChart.Series<Number, Number> series = new XYChart.Series<>();
+            series.setName(name);
+            data_series.put(name, series);
+            series_num_points.put(name, 0);
+            System.out.println(name);
+            super.getData().add(series);
+        }
     }
 
-    public void addValue(double val) {
-        addValue(num_points + 1, val);
+    public static AnimatedLineChart createChart(int max_y, int min_y, int max_num_data_points, String title,
+                              String x_axis_label, String y_axis_label, String[] series_names)
+    {
+        NumberAxis x = new NumberAxis(0, max_num_data_points, max_num_data_points / 10);
+        NumberAxis y = new NumberAxis(min_y, max_y, 1);
+        x.setLabel(x_axis_label);
+        x.setForceZeroInRange(false);
+        y.setLabel(y_axis_label);
+        AnimatedLineChart lineChart = new AnimatedLineChart(x, y, title, series_names);
+        lineChart.setStepX(max_num_data_points / 10);
+        return lineChart;
     }
 
-    public void addValue(double time, double val) {
-        num_points++;
-        dataSeries.getData().add(new XYChart.Data<>(time, val));
+    private int getMaxNumPoints() {
+        int max = Integer.MIN_VALUE;
+        for (int num : series_num_points.values())
+            max = Math.max(max, num);
+        return max;
+    }
+
+    public void addValue(String series_name, double val) {
+        addValue(series_name, series_num_points.get(series_name) + 1, val);
+    }
+
+    public void addValue(String series_name, double time, double val) {
+        series_num_points.put(series_name, series_num_points.get(series_name) + 1);
+        int max_num_points = series_num_points.get(series_name);
+        max_num_points++;
+
+        XYChart.Series<Number, Number> this_series = data_series.get(series_name);
+
+        this_series.getData().add(new XYChart.Data<>(time, val));
 
         // delete old data
-        if (num_points > max_num_data_points) {
-            dataSeries.getData().remove(0);
+        if (max_num_points > max_allowed_num_data_points) {
+            for (XYChart.Series<Number, Number> series : data_series.values())
+                series.getData().remove(0);
         }
 
         // every $step$ number of points, move the x-axis
-        if (num_points > max_num_data_points - 1 && num_points % step == 0) {
-            xAxis.setLowerBound(xAxis.getLowerBound() + step);
-            xAxis.setUpperBound(xAxis.getUpperBound() + step);
+        if (max_num_points > max_allowed_num_data_points - 1 && max_num_points % step == 0) {
+            max_allowed_num_data_points += step;
+            ((NumberAxis)getXAxis()).setLowerBound(((NumberAxis)getXAxis()).getLowerBound() + step);
+            ((NumberAxis)getXAxis()).setUpperBound(((NumberAxis)getXAxis()).getUpperBound() + step);
         }
     }
 
@@ -95,15 +91,10 @@ public class AnimatedLineChart {
         this.step = step_x;
     }
 
-    public long getRefreshRate() {
-        return ms_refresh_rate;
-    }
-
-
 //
 //    @Override
 //    public void start(Stage primaryStage) throws Exception {
-//        primaryStage.setScene(new Scene(createContent()));
+//        primaryStage.setScene(new Scene(getChart()));
 //        primaryStage.setTitle("Animated Line Chart");
 //        primaryStage.show();
 //        play();

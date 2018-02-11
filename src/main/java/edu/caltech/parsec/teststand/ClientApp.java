@@ -1,28 +1,17 @@
 package edu.caltech.parsec.teststand;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import javafx.animation.KeyFrame;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import java.util.HashMap;
-import java.util.function.DoubleSupplier;
+import java.io.IOException;
 
 public class ClientApp extends Application {
 
@@ -30,14 +19,23 @@ public class ClientApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        primaryStage.setTitle("Line Chart Sample");
+        Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("ClientApp.fxml"));
+
+        Scene scene = new Scene(root, 1600, 800);
+
+        primaryStage.setTitle("PARSEC Test Stand Interface Client");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+        AnimatedLineChart chart;
+
+        /*primaryStage.setTitle("Test Stand Interface");
 
         GridPane grid = new GridPane();
-        setGridpaneColsRowsSameSize(grid, 12, 12);
+        setGridpaneColsRowsSameSize(grid, 3, 3, true);
         grid.setHgap(25);
         grid.setVgap(25);
         grid.setPadding(new Insets(25, 25, 25, 25));
-/*
+*//*
         // ======== CHARTS =================================
 
         final CategoryAxis xAxis1 = new CategoryAxis();
@@ -105,67 +103,86 @@ public class ClientApp extends Application {
         series3.getData().add(new XYChart.Data("Sep", 43));
         series3.getData().add(new XYChart.Data("Oct", 44));
         series3.getData().add(new XYChart.Data("Nov", 45));
-        series3.getData().add(new XYChart.Data("Dec", 44));*/
+        series3.getData().add(new XYChart.Data("Dec", 44));*//*
 
 //        lineChart1.getData().addAll(series1);
 //        lineChart2.getData().addAll(series2);
 //        lineChart3.getData().addAll(series3);
 
-        AnimatedLineChart animatedLineChart = new AnimatedLineChart(10, 1, 100, 1000000, "Temperature of Engine", "Time (s)", "Temperature (Deg C)");
+        // Line charts
+
+        AnimatedLineChart temperatureCharts = AnimatedLineChart.createChart(10, 1, 20,
+                "Temperature of Engine", "Time (s)",
+                "Temperature (Deg C)", new String[]{"Temp1", "Temp2"});
+        AnimatedLineChart fuelRemainingCharts = AnimatedLineChart.createChart(10, 1, 20,
+                "Fuel and Oxidizer Remaining", "Time (s)",
+                "Amount (Gallons)", new String[]{"Fuel Remaining", "Oxidizer Remaining"});
+        AnimatedLineChart fuelFlowCharts = AnimatedLineChart.createChart(10, 1, 20,
+                "Fuel and Oxidizer Flow Rates", "Time (s)",
+                "Flow Rate (Gallons / s)", new String[]{"Fuel Flow Rate", "Oxidizer Flow Rate"});
+        AnimatedLineChart thrustImpulseCharts = AnimatedLineChart.createChart(10, 1, 20,
+                "Thrust and Impulse", "Time (s)",
+                "", new String[]{"Thrust (lbs)", "Impulse (Lbs*s)"});
+
+        // ================= MENU ================================
+        MenuBar menuBar = new MenuBar();
+
+        Menu menuFile = new Menu("File");
+        setupMenuItems(menuFile);
+
+        menuBar.getMenus().addAll(menuFile);
 
         // ================= TextArea STUFF ======================
 
-        TextArea javascriptTextBox = new TextArea();
-        javascriptTextBox.setWrapText(true);
-
-        // =================== BUTTONS ========================
-
-        ScriptEngineManager manager = new ScriptEngineManager();
-        ScriptEngine engine = manager.getEngineByName("js");
-
-        Button start_btn = new Button("Begin Test");
-        start_btn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                try {
-                    System.out.println(engine.eval(javascriptTextBox.getText()));
-                }
-                catch (Exception e) {
-                    System.out.println(e);
-                }
-            }
-        });
-        Button stop_btn = new Button("Stop Test");
+//        TextArea javascriptTextBox = new TextArea();
+//        javascriptTextBox.setWrapText(true);
+//
+//        // =================== BUTTONS ========================
+//
+//        ScriptEngineManager manager = new ScriptEngineManager();
+//        ScriptEngine engine = manager.getEngineByName("js");
+//
+        Button start_btn = new Button("Add 1");
+        start_btn.setOnAction(event -> temperatureCharts.addValue("Temp1", 8));
+        Button stop_btn = new Button("Add 2");
+        stop_btn.setOnAction(event -> temperatureCharts.addValue("Temp2", 5));
 
         // ================= GRID STUFF ======================
 
-//        grid.add(lineChart1, 0, 0, 4, 4); // Col index, row index, colspan, rowspan
-//        grid.add(lineChart2, 4, 0, 4, 4);
-//        grid.add(lineChart3, 8, 0, 4, 4);
-        grid.add(javascriptTextBox, 0,0, 3, 4);
-        grid.add(start_btn, 5, 10, 1, 1);
-        grid.add(stop_btn, 6, 10, 1, 1);
-        grid.add(animatedLineChart.createContent(), 0, 4, 4, 4);
+//        grid.add(javascriptTextBox, 0,0, 3, 4);
+//        grid.add(start_btn, 1, 1, 1, 1);
+//        grid.add(stop_btn, 0, 1, 1, 1);
+        grid.add(thrustImpulseCharts, 0, 0, 1, 1);
+        grid.add(fuelRemainingCharts, 2, 0, 1, 1);
+        grid.add(temperatureCharts, 0, 1, 1, 1);
+        grid.add(fuelFlowCharts, 2, 1, 1, 1);
+        grid.add(menuBar, 0, 0, 1, 1);
 
         Scene scene = new Scene(grid, 1024, 800);
 
-        ObjectMapper mapper = new ObjectMapper();
-        Sensors sensors = mapper.readValue(
-                HttpInterface.executeGet(GET_ALL_SENSORS_URL, new HashMap<>()), Sensors.class);
-        System.out.println(sensors);
+//        ObjectMapper mapper = new ObjectMapper();
+//        Sensors sensors = mapper.readValue(
+//                HttpInterface.executeGet(GET_ALL_SENSORS_URL, new HashMap<>()), Sensors.class);
+//        System.out.println(sensors);
 
         primaryStage.setScene(scene);
-        primaryStage.show();
-        Object result = engine.eval("4*5");
-        System.out.println(result);
+        primaryStage.show();*/
     }
 
-    private static void setGridpaneColsRowsSameSize(GridPane grid, int rows, int cols) {
-        double row_height = 100.0 / rows;
+    private static void setGridpaneColsRowsSameSize(GridPane grid, int rows, int cols, boolean skipFirstRow) {
+        int actual_num_rows = rows - (skipFirstRow ? 1 : 0);
+        // Save 5% for the menu bar
+        double row_height = (100.0 / actual_num_rows) - (skipFirstRow ? 5 : 0);
         double col_width = 100.0 / cols;
 
-        RowConstraints[] row_constraints = new RowConstraints[cols];
-        for (int row = 0; row < rows; row++){
+
+        RowConstraints[] row_constraints = new RowConstraints[rows];
+        if (skipFirstRow) {
+            RowConstraints constraint = new RowConstraints();
+            constraint.setPercentHeight(5);
+            row_constraints[0] = constraint;
+        }
+        for (int row = (skipFirstRow ? 1 : 0); row < rows; row++){
             RowConstraints constraint = new RowConstraints();
             constraint.setPercentHeight(row_height);
             row_constraints[row] = constraint;
@@ -180,6 +197,93 @@ public class ClientApp extends Application {
 
         grid.getRowConstraints().addAll(row_constraints);
         grid.getColumnConstraints().addAll(col_constraints);
+    }
+
+    private void setupMenuItems(Menu menu) {
+        MenuItem manualValveControl = new MenuItem("Manual Valve Control");
+        manualValveControl.setOnAction(event -> {
+            try {
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                // TODO: Update this with the correct resource name
+                fxmlLoader.setLocation(getClass().getResource("ManualValveControl.fxml"));
+                /*
+                 * if "fx:controller" is not set in fxml
+                 * fxmlLoader.setController(NewWindowController);
+                 */
+                Scene scene = new Scene(fxmlLoader.load(), 800, 600);
+                Stage stage = new Stage();
+                stage.setTitle("Manual Valve Control");
+                stage.setScene(scene);
+                stage.show();
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        MenuItem valveSetup = new MenuItem("Manual Valve Control");
+        valveSetup.setOnAction(event -> {
+            try {
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                // TODO: Update this with the correct resource name
+                fxmlLoader.setLocation(getClass().getResource("ValveSetup.fxml"));
+                /*
+                 * if "fx:controller" is not set in fxml
+                 * fxmlLoader.setController(NewWindowController);
+                 */
+                Scene scene = new Scene(fxmlLoader.load(), 800, 600);
+                Stage stage = new Stage();
+                stage.setTitle("Valve Setup");
+                stage.setScene(scene);
+                stage.show();
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        MenuItem showClientLogs = new MenuItem("Manual Valve Control");
+        showClientLogs.setOnAction(event -> {
+            try {
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                // TODO: Update this with the correct resource name
+                fxmlLoader.setLocation(getClass().getResource("ClientLogs.fxml"));
+                /*
+                 * if "fx:controller" is not set in fxml
+                 * fxmlLoader.setController(NewWindowController);
+                 */
+                Scene scene = new Scene(fxmlLoader.load(), 800, 600);
+                Stage stage = new Stage();
+                stage.setTitle("Client-side Logs");
+                stage.setScene(scene);
+                stage.show();
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        MenuItem showServerLogs = new MenuItem("Manual Valve Control");
+        showServerLogs.setOnAction(event -> {
+            try {
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                // TODO: Update this with the correct resource name
+                fxmlLoader.setLocation(getClass().getResource("ServerLogs.fxml"));
+                /*
+                 * if "fx:controller" is not set in fxml
+                 * fxmlLoader.setController(NewWindowController);
+                 */
+                Scene scene = new Scene(fxmlLoader.load(), 800, 600);
+                Stage stage = new Stage();
+                stage.setTitle("Server-side Logs");
+                stage.setScene(scene);
+                stage.show();
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        menu.getItems().addAll(valveSetup, manualValveControl, showClientLogs, showServerLogs);
     }
     
     public static void main(String[] args) {
