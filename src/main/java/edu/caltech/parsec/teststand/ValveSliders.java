@@ -1,3 +1,5 @@
+package edu.caltech.parsec.teststand;
+
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;

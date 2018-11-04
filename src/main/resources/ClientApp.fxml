@@ -13,9 +13,9 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.caltech.parsec.teststand.ClientController">
+<BorderPane id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.caltech.parsec.teststand.ClientController">
    <top>
-      <MenuBar BorderPane.alignment="CENTER">
+      <MenuBar id="menuBarId" BorderPane.alignment="CENTER">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
@@ -35,7 +35,7 @@
    <center>
       <TabPane BorderPane.alignment="CENTER">
          <tabs>
-            <Tab closable="false" text="Temperature">
+            <Tab id="temperatureTab" closable="false" text="Temperature">
                <content>
                   <GridPane hgap="10.0" vgap="10.0">
                     <columnConstraints>
@@ -48,7 +48,7 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <AnimatedLineChart animated="false" title="Igniter Temp">
+                        <AnimatedLineChart fx:id="igniterTempChart" animated="false" title="Igniter Temp">
                           <xAxis>
                             <CategoryAxis side="BOTTOM" />
                           </xAxis>
@@ -56,7 +56,7 @@
                             <NumberAxis side="LEFT" />
                           </yAxis>
                         </AnimatedLineChart>
-                        <AnimatedLineChart title="Fuel Tank Temp" GridPane.columnIndex="1">
+                        <AnimatedLineChart fx:id="fuelTankTempChart" title="Fuel Tank Temp" GridPane.columnIndex="1">
                           <xAxis>
                             <CategoryAxis side="BOTTOM" />
                           </xAxis>
@@ -64,7 +64,7 @@
                             <NumberAxis side="LEFT" />
                           </yAxis>
                         </AnimatedLineChart>
-                        <AnimatedLineChart title="Random Temp 1" GridPane.columnIndex="2">
+                        <AnimatedLineChart fx:id="randomTemp1Chart" title="Random Temp 1" GridPane.columnIndex="2">
                           <xAxis>
                             <CategoryAxis side="BOTTOM" />
                           </xAxis>
@@ -72,7 +72,7 @@
                             <NumberAxis side="LEFT" />
                           </yAxis>
                         </AnimatedLineChart>
-                        <AnimatedLineChart title="Engine Temps" GridPane.rowIndex="1">
+                        <AnimatedLineChart fx:id="engineTempsChart" title="Engine Temps" GridPane.rowIndex="1">
                           <xAxis>
                             <CategoryAxis side="BOTTOM" />
                           </xAxis>
@@ -80,7 +80,7 @@
                             <NumberAxis side="LEFT" />
                           </yAxis>
                         </AnimatedLineChart>
-                        <AnimatedLineChart title="Oxidizer Tank Temp" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <AnimatedLineChart fx:id="oxidizerTankTempChart" title="Oxidizer Tank Temp" GridPane.columnIndex="1" GridPane.rowIndex="1">
                           <xAxis>
                             <CategoryAxis side="BOTTOM" />
                           </xAxis>
@@ -88,7 +88,7 @@
                             <NumberAxis side="LEFT" />
                           </yAxis>
                         </AnimatedLineChart>
-                        <AnimatedLineChart title="Random Temp 2" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                        <AnimatedLineChart fx:id="randomTemp2Chart" title="Random Temp 2" GridPane.columnIndex="2" GridPane.rowIndex="1">
                           <xAxis>
                             <CategoryAxis side="BOTTOM" />
                           </xAxis>
@@ -113,7 +113,7 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <AnimatedLineChart title="Fuel Tank Pressure">
+                        <AnimatedLineChart fx:id="fuelTankPressureChart" title="Fuel Tank Pressure">
                            <xAxis>
                               <CategoryAxis side="BOTTOM" />
                            </xAxis>
@@ -121,7 +121,7 @@
                               <NumberAxis side="LEFT" />
                            </yAxis>
                         </AnimatedLineChart>
-                        <AnimatedLineChart title="Fuel Auxillary Pressure" GridPane.columnIndex="1">
+                        <AnimatedLineChart fx:id="fuelAuxillaryPressureChart" title="Fuel Auxillary Pressure" GridPane.columnIndex="1">
                            <xAxis>
                               <CategoryAxis side="BOTTOM" />
                            </xAxis>
@@ -129,7 +129,7 @@
                               <NumberAxis side="LEFT" />
                            </yAxis>
                         </AnimatedLineChart>
-                        <AnimatedLineChart title="Combustion Chamber Pressure" GridPane.columnIndex="2">
+                        <AnimatedLineChart fx:id="combustionChamberPressureChart" title="Combustion Chamber Pressure" GridPane.columnIndex="2">
                            <xAxis>
                               <CategoryAxis side="BOTTOM" />
                            </xAxis>
@@ -137,7 +137,7 @@
                               <NumberAxis side="LEFT" />
                            </yAxis>
                         </AnimatedLineChart>
-                        <AnimatedLineChart title="Oxidizer Tank Pressure" GridPane.rowIndex="1">
+                        <AnimatedLineChart fx:id="oxidizerTankPressureChart" title="Oxidizer Tank Pressure" GridPane.rowIndex="1">
                            <xAxis>
                               <CategoryAxis side="BOTTOM" />
                            </xAxis>
@@ -145,7 +145,7 @@
                               <NumberAxis side="LEFT" />
                            </yAxis>
                         </AnimatedLineChart>
-                        <AnimatedLineChart title="Ox. Auxillary Pressure" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <AnimatedLineChart fx:id="oxAuxillaryPressureChart" title="Ox. Auxillary Pressure" GridPane.columnIndex="1" GridPane.rowIndex="1">
                            <xAxis>
                               <CategoryAxis side="BOTTOM" />
                            </xAxis>
@@ -153,7 +153,7 @@
                               <NumberAxis side="LEFT" />
                            </yAxis>
                         </AnimatedLineChart>
-                        <AnimatedLineChart title="Internal Pipe Pressures" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                        <AnimatedLineChart fx:id="internalPipePressuresChart" title="Internal Pipe Pressures" GridPane.columnIndex="2" GridPane.rowIndex="1">
                            <xAxis>
                               <CategoryAxis side="BOTTOM" />
                            </xAxis>
@@ -178,7 +178,7 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <AnimatedLineChart title="Force">
+                        <AnimatedLineChart fx:id="forceChart" title="Force">
                            <xAxis>
                               <CategoryAxis side="BOTTOM" />
                            </xAxis>
@@ -186,7 +186,7 @@
                               <NumberAxis side="LEFT" />
                            </yAxis>
                         </AnimatedLineChart>
-                        <AnimatedLineChart title="Total Impulse" GridPane.columnIndex="1">
+                        <AnimatedLineChart fx:id="totalImpulseChart" title="Total Impulse" GridPane.columnIndex="1">
                            <xAxis>
                               <CategoryAxis side="BOTTOM" />
                            </xAxis>
@@ -194,7 +194,7 @@
                               <NumberAxis side="LEFT" />
                            </yAxis>
                         </AnimatedLineChart>
-                        <AnimatedLineChart title="Remaining Fuel / Ox" GridPane.columnIndex="2">
+                        <AnimatedLineChart fx:id="remainingFuelOxChart" title="Remaining Fuel / Ox" GridPane.columnIndex="2">
                            <xAxis>
                               <CategoryAxis side="BOTTOM" />
                            </xAxis>
@@ -202,7 +202,7 @@
                               <NumberAxis side="LEFT" />
                            </yAxis>
                         </AnimatedLineChart>
-                        <AnimatedLineChart title="Predicted Apex" GridPane.rowIndex="1">
+                        <AnimatedLineChart fx:id="predictedApexChart" title="Predicted Apex" GridPane.rowIndex="1">
                            <xAxis>
                               <CategoryAxis side="BOTTOM" />
                            </xAxis>
@@ -210,7 +210,7 @@
                               <NumberAxis side="LEFT" />
                            </yAxis>
                         </AnimatedLineChart>
-                        <AnimatedLineChart title="Fuel/Ox Efficiency" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <AnimatedLineChart fx:id="fuelOxefficiencyChart" title="Fuel/Ox Efficiency" GridPane.columnIndex="1" GridPane.rowIndex="1">
                            <xAxis>
                               <CategoryAxis side="BOTTOM" />
                            </xAxis>
@@ -218,7 +218,7 @@
                               <NumberAxis side="LEFT" />
                            </yAxis>
                         </AnimatedLineChart>
-                        <AnimatedLineChart title="Internal Pipe Pressures" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                        <AnimatedLineChart fx:id="externalPipePressuresChart" title="External Pipe Pressures" GridPane.columnIndex="2" GridPane.rowIndex="1">
                            <xAxis>
                               <CategoryAxis side="BOTTOM" />
                            </xAxis>

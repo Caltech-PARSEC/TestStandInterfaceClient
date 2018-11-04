@@ -40,15 +40,18 @@ public class AnimatedLineChart extends LineChart {
         }
     }
 
-    public static AnimatedLineChart createChart(int max_y, int min_y, int max_num_data_points, String title,
-                              String x_axis_label, String y_axis_label, String[] series_names)
+    public static AnimatedLineChart createChart(
+        int max_y, int min_y, int max_num_data_points, String title,
+        String x_axis_label, String y_axis_label, String[] series_names)
     {
-        NumberAxis x = new NumberAxis(0, max_num_data_points, max_num_data_points / 10);
+        NumberAxis x = 
+          new NumberAxis(0, max_num_data_points, max_num_data_points / 10);
         NumberAxis y = new NumberAxis(min_y, max_y, 1);
         x.setLabel(x_axis_label);
         x.setForceZeroInRange(false);
         y.setLabel(y_axis_label);
-        AnimatedLineChart lineChart = new AnimatedLineChart(x, y, title, series_names);
+        AnimatedLineChart lineChart = 
+          new AnimatedLineChart(x, y, title, series_names);
         lineChart.setStepX(max_num_data_points / 10);
         return lineChart;
     }
