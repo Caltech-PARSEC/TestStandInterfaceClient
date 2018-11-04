@@ -20,6 +20,16 @@ public class AnimatedLineChart extends LineChart {
 
     public AnimatedLineChart(@NamedArg("xAxis") Axis xAxis, @NamedArg("yAxis") Axis yAxis) {
         super(xAxis, yAxis);
+        xAxis.setAutoRanging(false);
+        yAxis.setAutoRanging(false);
+        ((NumberAxis) xAxis).lowerBoundProperty().setValue(0);
+        ((NumberAxis) xAxis).upperBoundProperty().setValue(20);
+        ((NumberAxis) yAxis).lowerBoundProperty().setValue(0);
+        ((NumberAxis) yAxis).upperBoundProperty().setValue(20);
+        data_series = new HashMap<>();
+        series_num_points = new HashMap<>();
+        max_allowed_num_data_points = 20;
+        step = 10;
     }
 
     public AnimatedLineChart(NumberAxis xAxis, NumberAxis yAxis, String title, String[] series_names) {
@@ -63,6 +73,14 @@ public class AnimatedLineChart extends LineChart {
         return max;
     }
 
+    public void addSeries(String name) {
+        XYChart.Series<Number, Number> series = new XYChart.Series<>();
+        series.setName(name);
+        data_series.put(name, series);
+        series_num_points.put(name, 0);
+        System.out.println(name);
+        super.getData().add(series);
+    }
     public void addValue(String series_name, double val) {
         addValue(series_name, series_num_points.get(series_name) + 1, val);
     }
@@ -85,8 +103,10 @@ public class AnimatedLineChart extends LineChart {
         // every $step$ number of points, move the x-axis
         if (max_num_points > max_allowed_num_data_points - 1 && max_num_points % step == 0) {
             max_allowed_num_data_points += step;
-            ((NumberAxis)getXAxis()).setLowerBound(((NumberAxis)getXAxis()).getLowerBound() + step);
-            ((NumberAxis)getXAxis()).setUpperBound(((NumberAxis)getXAxis()).getUpperBound() + step);
+            ((NumberAxis) getXAxis()).lowerBoundProperty().setValue(((NumberAxis)getXAxis()).getLowerBound() + step);
+            ((NumberAxis) getXAxis()).upperBoundProperty().setValue(((NumberAxis)getXAxis()).getUpperBound() + step);
+//            ((NumberAxis)getXAxis()).setLowerBound(((NumberAxis)getXAxis()).getLowerBound() + step);
+//            ((NumberAxis)getXAxis()).setUpperBound(((NumberAxis)getXAxis()).getUpperBound() + step);
         }
     }
 

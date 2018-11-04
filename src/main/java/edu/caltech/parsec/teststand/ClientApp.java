@@ -1,16 +1,11 @@
 package edu.caltech.parsec.teststand;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -19,13 +14,20 @@ public class ClientApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("ClientApp.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("ClientApp.fxml"));
+        Parent root = loader.load();
 
         Scene scene = new Scene(root, 1600, 800);
+
+        ClientAppController controller = (ClientAppController) loader.getController();
 
         primaryStage.setTitle("PARSEC Test Stand Interface Client");
         primaryStage.setScene(scene);
         primaryStage.show();
+        for(int i = 0; i < 100; i++) {
+            controller.handleSensorData(new Sensor("Sensor1", "igniterTempChart",
+                    "series1", 10));
+        }
     }
 
     private void setupMenuItems(Menu menu) {

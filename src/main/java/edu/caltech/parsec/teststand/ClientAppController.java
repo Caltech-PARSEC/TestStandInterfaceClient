@@ -51,6 +51,10 @@ public class ClientAppController {
 
     public void initialize()
     {
+        graphMap = new HashMap<>();
+        igniterTempChart.addSeries("series1");
+               // AnimatedLineChart.createChart(20, 0, 10,
+               // "IgniterTempChart", "time", "temp", new String[]{"series1"});
 
         // To autogenerate more of these lines, copy paste 
         // all of the variables here,
