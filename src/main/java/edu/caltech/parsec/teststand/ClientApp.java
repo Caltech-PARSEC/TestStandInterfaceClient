@@ -12,6 +12,8 @@ import java.io.IOException;
 
 public class ClientApp extends Application {
 
+    private static ClientAppController controller;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("ClientApp.fxml"));
@@ -19,37 +21,27 @@ public class ClientApp extends Application {
 
         Scene scene = new Scene(root, 1600, 800);
 
-        ClientAppController controller = (ClientAppController) loader.getController();
+        SensorManager.init();
+        ValveManager.init();
+        controller = (ClientAppController) loader.getController();
 
         primaryStage.setTitle("PARSEC Test Stand Interface Client");
         primaryStage.setScene(scene);
         primaryStage.show();
+        // Test code
         for(int i = 0; i < 100; i++) {
-            controller.handleSensorData(new Sensor("Sensor1", "igniterTempChart",
-                    "series1", 10));
+            handleSensorData(SensorManager.sensorMap.get("sensor1"));
         }
+    }
+
+    // TODO: Hook up this method to the data stream from the server
+    public static void handleSensorData(Sensor sensor) {
+        controller.handleSensorData(sensor);
     }
 
     private void setupMenuItems(Menu menu) {
         MenuItem manualValveControl = new MenuItem("Manual Valve Control");
         manualValveControl.setOnAction(event -> {
-            try {
-                FXMLLoader fxmlLoader = new FXMLLoader();
-                // TODO: Update this with the correct resource name
-                fxmlLoader.setLocation(getClass().getResource("ManualValveControl.fxml"));
-                /*
-                 * if "fx:controller" is not set in fxml
-                 * fxmlLoader.setController(NewWindowController);
-                 */
-                Scene scene = new Scene(fxmlLoader.load(), 800, 600);
-                Stage stage = new Stage();
-                stage.setTitle("Manual Valve Control");
-                stage.setScene(scene);
-                stage.show();
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-            }
         });
 
         MenuItem valveSetup = new MenuItem("Manual Valve Control");

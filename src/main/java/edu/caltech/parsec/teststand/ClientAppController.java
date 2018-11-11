@@ -4,12 +4,19 @@ import javafx.fxml.FXML;
 
 import javafx.event.ActionEvent;
 
+import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import edu.caltech.parsec.teststand.AnimatedLineChart;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 public class ClientAppController {
+//    @FXML
+//    private MenuBar menuBar;
     @FXML
     private AnimatedLineChart igniterTempChart;
     @FXML
@@ -53,8 +60,6 @@ public class ClientAppController {
     {
         graphMap = new HashMap<>();
         igniterTempChart.addSeries("series1");
-               // AnimatedLineChart.createChart(20, 0, 10,
-               // "IgniterTempChart", "time", "temp", new String[]{"series1"});
 
         // To autogenerate more of these lines, copy paste 
         // all of the variables here,
@@ -99,6 +104,25 @@ public class ClientAppController {
         graphMap.put("externalPipePressuresChart",
             externalPipePressuresChart);
 
+    }
+
+    @FXML
+    public void handleLaunchValveController() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("ValveScreen.fxml"));
+            /*
+             * if "fx:controller" is not set in fxml
+             * fxmlLoader.setController(NewWindowController);
+             */
+            Scene scene = new Scene(loader.load(), 800, 600);
+            Stage stage = new Stage();
+            stage.setTitle("Manual Valve Control");
+            stage.setScene(scene);
+            stage.show();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // Event Listener on MenuItem.onAction
