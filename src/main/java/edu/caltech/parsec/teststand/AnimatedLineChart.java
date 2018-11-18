@@ -15,8 +15,8 @@ public class AnimatedLineChart extends LineChart {
     private HashMap<String, XYChart.Series<Number, Number>> data_series;
     private HashMap<String, Integer> series_num_points;
 
-    // max_allowed_num_data_points is the number of data points to show.
-    private int max_allowed_num_data_points, step;
+    // num_display_points is the number of data points to show.
+    private int num_display_points = 20, step = 2;
 
     public AnimatedLineChart(@NamedArg("xAxis") Axis xAxis, @NamedArg("yAxis") Axis yAxis) {
         super(xAxis, yAxis);
@@ -28,8 +28,6 @@ public class AnimatedLineChart extends LineChart {
         ((NumberAxis) yAxis).upperBoundProperty().setValue(20);
         data_series = new HashMap<>();
         series_num_points = new HashMap<>();
-        max_allowed_num_data_points = 20;
-        step = 10;
     }
 
     public AnimatedLineChart(NumberAxis xAxis, NumberAxis yAxis, String title, String[] series_names) {
@@ -66,12 +64,12 @@ public class AnimatedLineChart extends LineChart {
         return lineChart;
     }
 
-    private int getMaxNumPoints() {
-        int max = Integer.MIN_VALUE;
-        for (int num : series_num_points.values())
-            max = Math.max(max, num);
-        return max;
-    }
+//    private int getMaxNumPoints() {
+//        int max = Integer.MIN_VALUE;
+//        for (int num : series_num_points.values())
+//            max = Math.max(max, num);
+//        return max;
+//    }
 
     public void addSeries(String name) {
         XYChart.Series<Number, Number> series = new XYChart.Series<>();
@@ -87,26 +85,40 @@ public class AnimatedLineChart extends LineChart {
 
     public void addValue(String series_name, double time, double val) {
         series_num_points.put(series_name, series_num_points.get(series_name) + 1);
-        int max_num_points = series_num_points.get(series_name);
-        max_num_points++;
 
         XYChart.Series<Number, Number> this_series = data_series.get(series_name);
 
         this_series.getData().add(new XYChart.Data<>(time, val));
+        if (val > ((NumberAxis)getYAxis()).getUpperBound())
+            ((NumberAxis)getYAxis()).setUpperBound(Math.ceil(val * 1.05));
+        else if (val < ((NumberAxis)getYAxis()).getLowerBound())
+            ((NumberAxis)getYAxis()).setUpperBound(Math.floor(val / 1.05));
+        int cur_num_points = this_series.getData().size();
 
-        // delete old data
-        if (max_num_points > max_allowed_num_data_points) {
+        // Once we have too many points, remove `step` many of them, then recalculate bounds
+        if (cur_num_points >= num_display_points) {
+            // Delete the old points
+            System.out.println("Removing shit");
             for (XYChart.Series<Number, Number> series : data_series.values())
-                series.getData().remove(0);
-        }
+                for (int i = 0; i < step; i++)
+                    series.getData().remove(0);
 
-        // every $step$ number of points, move the x-axis
-        if (max_num_points > max_allowed_num_data_points - 1 && max_num_points % step == 0) {
-            max_allowed_num_data_points += step;
-            ((NumberAxis) getXAxis()).lowerBoundProperty().setValue(((NumberAxis)getXAxis()).getLowerBound() + step);
-            ((NumberAxis) getXAxis()).upperBoundProperty().setValue(((NumberAxis)getXAxis()).getUpperBound() + step);
-//            ((NumberAxis)getXAxis()).setLowerBound(((NumberAxis)getXAxis()).getLowerBound() + step);
-//            ((NumberAxis)getXAxis()).setUpperBound(((NumberAxis)getXAxis()).getUpperBound() + step);
+            // Recalculate the new upper/lower bounds
+            double minimum = Double.MAX_VALUE;
+            double maximum = -Double.MAX_VALUE;
+            for (XYChart.Series<Number, Number> series : data_series.values()) {
+                for (int i = 0; i < series.getData().size(); i++) {
+                    Data<Number, Number> value = series.getData().get(i);
+                    minimum = Math.min(minimum, value.getYValue().doubleValue());
+                    maximum = Math.max(maximum, value.getYValue().doubleValue());
+                }
+            }
+//            ((NumberAxis) getXAxis()).lowerBoundProperty().setValue(((NumberAxis)getXAxis()).getLowerBound() + step);
+//            ((NumberAxis) getXAxis()).upperBoundProperty().setValue(((NumberAxis)getXAxis()).getUpperBound() + step);
+            ((NumberAxis)getXAxis()).setUpperBound(((NumberAxis)getXAxis()).getUpperBound() + step);
+            ((NumberAxis)getXAxis()).setLowerBound(((NumberAxis)getXAxis()).getLowerBound() + step);
+            ((NumberAxis)getYAxis()).setLowerBound(Math.floor(minimum / 1.05));
+            ((NumberAxis)getYAxis()).setUpperBound(Math.ceil(maximum * 1.05));
         }
     }
 

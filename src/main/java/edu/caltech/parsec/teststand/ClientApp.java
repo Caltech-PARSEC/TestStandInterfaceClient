@@ -30,7 +30,7 @@ public class ClientApp extends Application {
         primaryStage.show();
         // Test code
         for(int i = 0; i < 100; i++) {
-            handleSensorData(SensorManager.sensorMap.get("sensor1"));
+            handleSensorData(new Sensor("sensor1", "igniterTempChart", "series1", 100 - i));
         }
     }
 
