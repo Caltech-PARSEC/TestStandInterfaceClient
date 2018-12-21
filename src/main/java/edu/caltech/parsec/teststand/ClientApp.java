@@ -21,6 +21,7 @@ public class ClientApp extends Application {
 
         Scene scene = new Scene(root, 1600, 800);
 
+        ServerClientInterface.init();
         SensorManager.init();
         ValveManager.init();
         controller = (ClientAppController) loader.getController();
@@ -107,6 +108,10 @@ public class ClientApp extends Application {
             }
         });
         menu.getItems().addAll(valveSetup, manualValveControl, showClientLogs, showServerLogs);
+    }
+
+    public static ClientAppController getController() {
+        return controller;
     }
 
     public static void main(String[] args) {

@@ -22,4 +22,8 @@ public class Valve {
 
     public double getValveValue() { return valveValue; }
 
+    public void setValveValue(double value) {
+        this.valveValue = value;
+    }
+
 }

@@ -146,4 +146,11 @@ public class ClientAppController {
             }
         }
     }
+
+    public void handleValveData(Valve valve) { /* TODO: Implement */ }
+
+    public void handleLogData(String message) {
+        /* TODO: Implement proper logging here. */
+        System.out.println("Message: " + message);
+    }
 }

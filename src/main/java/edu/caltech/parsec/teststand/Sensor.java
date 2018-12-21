@@ -44,6 +44,10 @@ public class Sensor {
 
     public double getSensorValue() { return sensorValue; }
 
+    public void setSensorValue(double value) {
+        this.sensorValue = value;
+    }
+
     public HashMap<String, ArrayList<String>> getGraphSeries() 
     {
         return graphSeries;
