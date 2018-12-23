@@ -109,7 +109,7 @@ public class ClientAppController {
     @FXML
     public void handleLaunchValveController() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("ValveScreen.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("ValveControl.fxml"));
             /*
              * if "fx:controller" is not set in fxml
              * fxmlLoader.setController(NewWindowController);

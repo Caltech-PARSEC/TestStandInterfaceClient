@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import org.controlsfx.control.ToggleSwitch?>
+
+
+<HBox prefHeight="27.0" prefWidth="122.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ToggleSwitch prefHeight="5.0" prefWidth="98.0" style="-fx-content-display: RIGHT;" text="valve 12234" />
+      <Text id="valve-led" fill="#ff2f00" stroke="BLACK" strokeLineCap="ROUND" strokeType="OUTSIDE" style="-fx-translate-y: -13; -fx-translate-x: 2;" text="•" wrappingWidth="5.75">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Text>
+   </children>
+</HBox>

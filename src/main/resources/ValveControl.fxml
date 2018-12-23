@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import org.controlsfx.control.ToggleSwitch?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@ValveControl.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.caltech.parsec.teststand.ValveController">
+   <children>
+      <ImageView fitHeight="400.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@P&amp;ID%20Hot%20Fire%20Test%20Stand.png" />
+         </image>
+      </ImageView>
+      <ToggleSwitch fx:id="valve_1" layoutX="89.0" layoutY="252.0" prefHeight="10.0" prefWidth="25.0" style="-fx-font-size: 4;" stylesheets="@ValveControl.css" text="Valve 1" />
+   </children>
+</Pane>

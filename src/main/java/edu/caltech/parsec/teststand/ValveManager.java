@@ -8,6 +8,6 @@ public class ValveManager {
 
     public static void init() {
         valveMap = new HashMap<>();
-        valveMap.put("valve1", new Valve("valve1",0));
+        valveMap.put("valve_1", new Valve("I am valve1",0));
     }
 }

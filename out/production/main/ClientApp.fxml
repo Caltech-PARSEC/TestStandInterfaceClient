@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import edu.caltech.parsec.teststand.AnimatedLineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<BorderPane id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.caltech.parsec.teststand.ClientAppController">
+   <top>
+      <MenuBar id="menuBar" BorderPane.alignment="CENTER">
+        <menus>
+          <Menu id="fileMenu" mnemonicParsing="false" text="File">
+            <items>
+                  <MenuItem mnemonicParsing="false" text="Test Server Connection" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleLaunchValveController" text="Launch Valve Controller" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleCloseClicked" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+   <center>
+      <TabPane BorderPane.alignment="CENTER">
+         <tabs>
+            <Tab id="temperatureTab" closable="false" text="Temperature">
+               <content>
+                  <GridPane hgap="10.0" vgap="10.0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <AnimatedLineChart fx:id="igniterTempChart" animated="false" title="Igniter Temp">
+                          <xAxis>
+                            <NumberAxis side="BOTTOM" />
+                          </xAxis>
+                          <yAxis>
+                            <NumberAxis side="LEFT" />
+                          </yAxis>
+                        </AnimatedLineChart>
+                        <AnimatedLineChart fx:id="fuelTankTempChart" title="Fuel Tank Temp" GridPane.columnIndex="1">
+                          <xAxis>
+                            <NumberAxis side="BOTTOM" />
+                          </xAxis>
+                          <yAxis>
+                            <NumberAxis side="LEFT" />
+                          </yAxis>
+                        </AnimatedLineChart>
+                        <AnimatedLineChart fx:id="randomTemp1Chart" title="Random Temp 1" GridPane.columnIndex="2">
+                          <xAxis>
+                            <NumberAxis side="BOTTOM" />
+                          </xAxis>
+                          <yAxis>
+                            <NumberAxis side="LEFT" />
+                          </yAxis>
+                        </AnimatedLineChart>
+                        <AnimatedLineChart fx:id="engineTempsChart" title="Engine Temps" GridPane.rowIndex="1">
+                          <xAxis>
+                            <NumberAxis side="BOTTOM" />
+                          </xAxis>
+                          <yAxis>
+                            <NumberAxis side="LEFT" />
+                          </yAxis>
+                        </AnimatedLineChart>
+                        <AnimatedLineChart fx:id="oxidizerTankTempChart" title="Oxidizer Tank Temp" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                          <xAxis>
+                            <NumberAxis side="BOTTOM" />
+                          </xAxis>
+                          <yAxis>
+                            <NumberAxis side="LEFT" />
+                          </yAxis>
+                        </AnimatedLineChart>
+                        <AnimatedLineChart fx:id="randomTemp2Chart" title="Random Temp 2" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                          <xAxis>
+                            <NumberAxis side="BOTTOM" />
+                          </xAxis>
+                          <yAxis>
+                            <NumberAxis side="LEFT" />
+                          </yAxis>
+                        </AnimatedLineChart>
+                     </children>
+                  </GridPane>
+               </content>
+            </Tab>
+            <Tab closable="false" text="Pressure">
+               <content>
+                  <GridPane hgap="10.0" vgap="10.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <AnimatedLineChart fx:id="fuelTankPressureChart" title="Fuel Tank Pressure">
+                           <xAxis>
+                              <NumberAxis side="BOTTOM" />
+                           </xAxis>
+                           <yAxis>
+                              <NumberAxis side="LEFT" />
+                           </yAxis>
+                        </AnimatedLineChart>
+                        <AnimatedLineChart fx:id="fuelAuxillaryPressureChart" title="Fuel Auxillary Pressure" GridPane.columnIndex="1">
+                           <xAxis>
+                              <NumberAxis side="BOTTOM" />
+                           </xAxis>
+                           <yAxis>
+                              <NumberAxis side="LEFT" />
+                           </yAxis>
+                        </AnimatedLineChart>
+                        <AnimatedLineChart fx:id="combustionChamberPressureChart" title="Combustion Chamber Pressure" GridPane.columnIndex="2">
+                           <xAxis>
+                              <NumberAxis side="BOTTOM" />
+                           </xAxis>
+                           <yAxis>
+                              <NumberAxis side="LEFT" />
+                           </yAxis>
+                        </AnimatedLineChart>
+                        <AnimatedLineChart fx:id="oxidizerTankPressureChart" title="Oxidizer Tank Pressure" GridPane.rowIndex="1">
+                           <xAxis>
+                              <NumberAxis side="BOTTOM" />
+                           </xAxis>
+                           <yAxis>
+                              <NumberAxis side="LEFT" />
+                           </yAxis>
+                        </AnimatedLineChart>
+                        <AnimatedLineChart fx:id="oxAuxillaryPressureChart" title="Ox. Auxillary Pressure" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                           <xAxis>
+                              <NumberAxis side="BOTTOM" />
+                           </xAxis>
+                           <yAxis>
+                              <NumberAxis side="LEFT" />
+                           </yAxis>
+                        </AnimatedLineChart>
+                        <AnimatedLineChart fx:id="internalPipePressuresChart" title="Internal Pipe Pressures" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                           <xAxis>
+                              <NumberAxis side="BOTTOM" />
+                           </xAxis>
+                           <yAxis>
+                              <NumberAxis side="LEFT" />
+                           </yAxis>
+                        </AnimatedLineChart>
+                     </children>
+                  </GridPane>
+               </content>
+            </Tab>
+            <Tab closable="false" text="Flight">
+               <content>
+                  <GridPane hgap="10.0" vgap="10.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <AnimatedLineChart fx:id="forceChart" title="Force">
+                           <xAxis>
+                              <NumberAxis side="BOTTOM" />
+                           </xAxis>
+                           <yAxis>
+                              <NumberAxis side="LEFT" />
+                           </yAxis>
+                        </AnimatedLineChart>
+                        <AnimatedLineChart fx:id="totalImpulseChart" title="Total Impulse" GridPane.columnIndex="1">
+                           <xAxis>
+                              <NumberAxis side="BOTTOM" />
+                           </xAxis>
+                           <yAxis>
+                              <NumberAxis side="LEFT" />
+                           </yAxis>
+                        </AnimatedLineChart>
+                        <AnimatedLineChart fx:id="remainingFuelOxChart" title="Remaining Fuel / Ox" GridPane.columnIndex="2">
+                           <xAxis>
+                              <NumberAxis side="BOTTOM" />
+                           </xAxis>
+                           <yAxis>
+                              <NumberAxis side="LEFT" />
+                           </yAxis>
+                        </AnimatedLineChart>
+                        <AnimatedLineChart fx:id="predictedApexChart" title="Predicted Apex" GridPane.rowIndex="1">
+                           <xAxis>
+                              <NumberAxis side="BOTTOM" />
+                           </xAxis>
+                           <yAxis>
+                              <NumberAxis side="LEFT" />
+                           </yAxis>
+                        </AnimatedLineChart>
+                        <AnimatedLineChart fx:id="fuelOxefficiencyChart" title="Fuel/Ox Efficiency" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                           <xAxis>
+                              <NumberAxis side="BOTTOM" />
+                           </xAxis>
+                           <yAxis>
+                              <NumberAxis side="LEFT" />
+                           </yAxis>
+                        </AnimatedLineChart>
+                        <AnimatedLineChart fx:id="externalPipePressuresChart" title="External Pipe Pressures" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                           <xAxis>
+                              <NumberAxis side="BOTTOM" />
+                           </xAxis>
+                           <yAxis>
+                              <NumberAxis side="LEFT" />
+                           </yAxis>
+                        </AnimatedLineChart>
+                     </children>
+                  </GridPane>
+               </content>
+            </Tab>
+         </tabs>
+      </TabPane>
+   </center>
+</BorderPane>

@@ -50,14 +50,14 @@ public class ClientApp extends Application {
             try {
                 FXMLLoader fxmlLoader = new FXMLLoader();
                 // TODO: Update this with the correct resource name
-                fxmlLoader.setLocation(getClass().getResource("ValveSetup.fxml"));
+                fxmlLoader.setLocation(getClass().getResource("ValveControl.fxml"));
                 /*
                  * if "fx:controller" is not set in fxml
                  * fxmlLoader.setController(NewWindowController);
                  */
                 Scene scene = new Scene(fxmlLoader.load(), 800, 600);
                 Stage stage = new Stage();
-                stage.setTitle("Valve Setup");
+                stage.setTitle("Valve Control");
                 stage.setScene(scene);
                 stage.show();
             }

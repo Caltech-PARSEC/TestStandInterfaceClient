@@ -11,6 +11,8 @@ import javafx.scene.layout.Region;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+// TODO: clean up this code in general.
+// TODO: Also need to refactor the code to keep all the points on the graph.
 public class AnimatedLineChart extends LineChart {
     private HashMap<String, XYChart.Series<Number, Number>> data_series;
     private HashMap<String, Integer> series_num_points;
@@ -125,18 +127,5 @@ public class AnimatedLineChart extends LineChart {
     public void setStepX(int step_x) {
         this.step = step_x;
     }
-
-//
-//    @Override
-//    public void start(Stage primaryStage) throws Exception {
-//        primaryStage.setScene(new Scene(getChart()));
-//        primaryStage.setTitle("Animated Line Chart");
-//        primaryStage.show();
-//        play();
-//    }
-//
-//    public static void main(String[] args) {
-//        launch(args);
-//    }
 
 }
