@@ -1,5 +1,6 @@
 package edu.caltech.parsec.teststand;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 
 import javafx.event.ActionEvent;
@@ -133,18 +134,23 @@ public class ClientAppController {
 
     public void handleSensorData(Sensor sensor)
     {
-        HashMap<String, ArrayList<String>> graphSeries =  sensor.getGraphSeries();
-        // In all the graphs containing this sensor...
-        for (String graphName : graphSeries.keySet())
-        {
-            // For each of the series on the graph that need this sensor...
-            for (String seriesName : graphSeries.get(graphName))
-            {
-                // Add the new sensor value
-                graphMap.get(graphName)
-                        .addValue(seriesName, sensor.getSensorValue());
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                HashMap<String, ArrayList<String>> graphSeries =  sensor.getGraphSeries();
+                // In all the graphs containing this sensor...
+                for (String graphName : graphSeries.keySet())
+                {
+                    // For each of the series on the graph that need this sensor...
+                    for (String seriesName : graphSeries.get(graphName))
+                    {
+                        // Add the new sensor value
+                        graphMap.get(graphName)
+                                .addValue(seriesName, sensor.getSensorValue());
+                    }
+                }
             }
-        }
+        });
     }
 
     public void handleValveData(Valve valve) { /* TODO: Implement */ }

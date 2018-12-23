@@ -59,16 +59,17 @@ public class ServerClientInterface {
                 ClientApp.getController().handleValveData(valve);
             }
         }).on("log_data", args -> {
-            JSONObject data = (JSONObject) args[0];
-
-            String message;
+            System.out.println(args[0]);
             try {
+                JSONObject data = (JSONObject) args[0];
+
+                String message;
                 message = data.getString("message");
+                ClientApp.getController().handleLogData(message);
             } catch (JSONException e) {
+                System.out.println("erorr: " + e.getCause());
                 return;
             }
-
-            ClientApp.getController().handleLogData(message);
         }).on(Socket.EVENT_DISCONNECT, args -> {
             System.out.println("Disconnected from server.");
             SOCKET.disconnect();

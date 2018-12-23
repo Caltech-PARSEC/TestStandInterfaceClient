@@ -29,15 +29,6 @@ public class ClientApp extends Application {
         primaryStage.setTitle("PARSEC Test Stand Interface Client");
         primaryStage.setScene(scene);
         primaryStage.show();
-        // Test code
-        for(int i = 0; i < 100; i++) {
-            handleSensorData(new Sensor("sensor1", "igniterTempChart", "series1", 100 - i));
-        }
-    }
-
-    // TODO: Hook up this method to the data stream from the server
-    public static void handleSensorData(Sensor sensor) {
-        controller.handleSensorData(sensor);
     }
 
     private void setupMenuItems(Menu menu) {
