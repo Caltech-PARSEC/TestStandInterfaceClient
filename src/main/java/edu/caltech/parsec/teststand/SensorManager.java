@@ -9,5 +9,6 @@ public class SensorManager {
     public static void init() {
         sensorMap = new HashMap<>();
         sensorMap.put("sensor1", new Sensor("sensor1", "igniterTempChart", "series1", 0));
+        sensorMap.put("sensor2", new Sensor("sensor2", "igniterTempChart", "series2", 0));
     }
 }

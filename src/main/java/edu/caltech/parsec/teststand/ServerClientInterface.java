@@ -25,31 +25,39 @@ public class ServerClientInterface {
         SOCKET.on(Socket.EVENT_CONNECT, args -> {
             System.out.println("Connected to server.");
         }).on("sensor_data", args -> {
-            JSONObject data = (JSONObject) args[0];
 
             String sensorName;
             double sensorValue;
+            double time;
             try {
+                JSONObject data = (JSONObject) args[0];
                 sensorName = data.getString("name");
                 sensorValue = data.getDouble("value");
-            } catch (JSONException e) {
+                time = data.getDouble("time");
+            } catch (Exception e) {
+                System.out.println("error: " + e.getCause());
+                System.out.println("message causing error: " + args[0]);
                 return;
             }
 
             Sensor sensor = getSensorByName(sensorName);
             if (sensor != null) {
                 sensor.setSensorValue(sensorValue);
-                ClientApp.getController().handleSensorData(sensor);
+                ClientApp.getController().handleSensorData(sensor, time);
             }
         }).on("valve_data", args -> {
-            JSONObject data = (JSONObject) args[0];
 
             String valveName;
             double valveAngle;
+            double time;
             try {
+                JSONObject data = (JSONObject) args[0];
                 valveName = data.getString("name");
                 valveAngle = data.getDouble("angle");
-            } catch (JSONException e) {
+                time = data.getDouble("time");
+            } catch (Exception e) {
+                System.out.println("error: " + e.getCause());
+                System.out.println("message causing error: " + args[0]);
                 return;
             }
 
@@ -59,15 +67,15 @@ public class ServerClientInterface {
                 ClientApp.getController().handleValveData(valve);
             }
         }).on("log_data", args -> {
-            System.out.println(args[0]);
             try {
                 JSONObject data = (JSONObject) args[0];
 
                 String message;
                 message = data.getString("message");
                 ClientApp.getController().handleLogData(message);
-            } catch (JSONException e) {
-                System.out.println("erorr: " + e.getCause());
+            } catch (Exception e) {
+                System.out.println("error: " + e.getCause());
+                System.out.println("message causing error: " + args[0]);
                 return;
             }
         }).on(Socket.EVENT_DISCONNECT, args -> {

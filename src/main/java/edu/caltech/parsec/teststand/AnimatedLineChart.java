@@ -1,6 +1,7 @@
 package edu.caltech.parsec.teststand;
 
 import javafx.beans.NamedArg;
+import javafx.collections.ObservableList;
 import javafx.scene.Parent;
 import javafx.scene.chart.Axis;
 import javafx.scene.chart.LineChart;
@@ -15,7 +16,6 @@ import java.util.HashMap;
 // TODO: Also need to refactor the code to keep all the points on the graph.
 public class AnimatedLineChart extends LineChart {
     private HashMap<String, XYChart.Series<Number, Number>> data_series;
-    private HashMap<String, Integer> series_num_points;
 
     // num_display_points is the number of data points to show.
     private int num_display_points = 20, step = 2;
@@ -29,7 +29,6 @@ public class AnimatedLineChart extends LineChart {
         ((NumberAxis) yAxis).lowerBoundProperty().setValue(0);
         ((NumberAxis) yAxis).upperBoundProperty().setValue(20);
         data_series = new HashMap<>();
-        series_num_points = new HashMap<>();
     }
 
     public AnimatedLineChart(NumberAxis xAxis, NumberAxis yAxis, String title, String[] series_names) {
@@ -39,12 +38,10 @@ public class AnimatedLineChart extends LineChart {
         super.setTitle(title);
 //        chart.setLegendVisible(false);
         data_series = new HashMap<>();
-        series_num_points = new HashMap<>();
         for (String name : series_names) {
             XYChart.Series<Number, Number> series = new XYChart.Series<>();
             series.setName(name);
             data_series.put(name, series);
-            series_num_points.put(name, 0);
             System.out.println(name);
             super.getData().add(series);
         }
@@ -66,62 +63,56 @@ public class AnimatedLineChart extends LineChart {
         return lineChart;
     }
 
-//    private int getMaxNumPoints() {
-//        int max = Integer.MIN_VALUE;
-//        for (int num : series_num_points.values())
-//            max = Math.max(max, num);
-//        return max;
-//    }
+    private double getMaxTime() {
+        double max = -Double.MAX_VALUE;
+        for (Series<Number, Number> s : data_series.values()) {
+            ObservableList<Data<Number, Number>> data = s.getData();
+            if (data.size() > 0)
+                max = Math.max(max, (Double) data.get(data.size() - 1).getXValue());
+        }
+        return max;
+    }
 
     public void addSeries(String name) {
+        // Initialize the new series
         XYChart.Series<Number, Number> series = new XYChart.Series<>();
         series.setName(name);
+
+        // Add it to the series map and the graph itself, respectively
         data_series.put(name, series);
-        series_num_points.put(name, 0);
-        System.out.println(name);
         super.getData().add(series);
     }
-    public void addValue(String series_name, double val) {
-        addValue(series_name, series_num_points.get(series_name) + 1, val);
-    }
 
+    // NOTE: This method assumes that time is a strictly increasing parameter
+    // on a per-series basis.
     public void addValue(String series_name, double time, double val) {
-        series_num_points.put(series_name, series_num_points.get(series_name) + 1);
-
         XYChart.Series<Number, Number> this_series = data_series.get(series_name);
 
         this_series.getData().add(new XYChart.Data<>(time, val));
-        if (val > ((NumberAxis)getYAxis()).getUpperBound())
+
+        // If this is the first data point we are adding
+        if (this_series.getData().size() == 1) {
             ((NumberAxis)getYAxis()).setUpperBound(Math.ceil(val * 1.05));
-        else if (val < ((NumberAxis)getYAxis()).getLowerBound())
-            ((NumberAxis)getYAxis()).setUpperBound(Math.floor(val / 1.05));
-        int cur_num_points = this_series.getData().size();
+            ((NumberAxis)getYAxis()).setLowerBound(Math.floor(val / 1.05));
 
-        // Once we have too many points, remove `step` many of them, then recalculate bounds
-        if (cur_num_points >= num_display_points) {
-            // Delete the old points
-            System.out.println("Removing shit");
-            for (XYChart.Series<Number, Number> series : data_series.values())
-                for (int i = 0; i < step; i++)
-                    series.getData().remove(0);
-
-            // Recalculate the new upper/lower bounds
-            double minimum = Double.MAX_VALUE;
-            double maximum = -Double.MAX_VALUE;
-            for (XYChart.Series<Number, Number> series : data_series.values()) {
-                for (int i = 0; i < series.getData().size(); i++) {
-                    Data<Number, Number> value = series.getData().get(i);
-                    minimum = Math.min(minimum, value.getYValue().doubleValue());
-                    maximum = Math.max(maximum, value.getYValue().doubleValue());
-                }
+            // There are already reasonable defaults for if t=0
+            if (time != 0) {
+                ((NumberAxis) getXAxis()).setUpperBound(Math.ceil(time * 1.05));
+                ((NumberAxis) getXAxis()).setLowerBound(Math.floor(time));
             }
-//            ((NumberAxis) getXAxis()).lowerBoundProperty().setValue(((NumberAxis)getXAxis()).getLowerBound() + step);
-//            ((NumberAxis) getXAxis()).upperBoundProperty().setValue(((NumberAxis)getXAxis()).getUpperBound() + step);
-            ((NumberAxis)getXAxis()).setUpperBound(((NumberAxis)getXAxis()).getUpperBound() + step);
-            ((NumberAxis)getXAxis()).setLowerBound(((NumberAxis)getXAxis()).getLowerBound() + step);
-            ((NumberAxis)getYAxis()).setLowerBound(Math.floor(minimum / 1.05));
-            ((NumberAxis)getYAxis()).setUpperBound(Math.ceil(maximum * 1.05));
+        } else {
+            // Set the y value upper and lower bounds if they need to be changed
+            if (val * 1.02 > ((NumberAxis) getYAxis()).getUpperBound())
+                ((NumberAxis) getYAxis()).setUpperBound(Math.ceil(val * 1.05));
+            else if (val / 1.02 < ((NumberAxis) getYAxis()).getLowerBound())
+                ((NumberAxis) getYAxis()).setUpperBound(Math.floor(val / 1.05));
+
+            // Set the x upper bound
+            double maxTime = getMaxTime();
+            if (maxTime * 1.02 > ((NumberAxis) getXAxis()).getUpperBound())
+                ((NumberAxis) getXAxis()).setUpperBound(Math.ceil(maxTime * 1.05));
         }
+
     }
 
     public void setStepX(int step_x) {
