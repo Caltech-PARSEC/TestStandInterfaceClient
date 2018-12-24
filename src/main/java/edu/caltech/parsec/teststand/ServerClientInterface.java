@@ -99,12 +99,12 @@ public class ServerClientInterface {
         SOCKET.emit("set_sensor", data);
     }
 
-    public static void sendSetValve(String valveName, float valveAngle) {
+    public static void sendSetValve(String valveName, boolean shouldOpen) {
         JSONObject data = new JSONObject();
 
         try {
             data.put("name", valveName);
-            data.put("angle", valveAngle);
+            data.put("should_open", shouldOpen);
         } catch (JSONException e) {
             System.out.println("Unable to write JSON data.");
         }
